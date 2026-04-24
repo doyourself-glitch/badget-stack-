@@ -50,6 +50,8 @@ export default function App() {
         <div className="input-group">
           <input 
             type="number" 
+            inputMode="decimal"
+            pattern="0-9"
             placeholder="Spend (¥)" 
             value={expenseInput}
             onChange={(e) => setExpenseInput(e.target.value)}
