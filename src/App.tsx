@@ -1,59 +1,78 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 export default function App() {
-  // 1日の上限予算
-  const DAILY_BUDGET = 3000;
-  
-  const [todaySpent, setTodaySpent] = useState(0);
-  const [expenseInput, setExpenseInput] = useState('');
-  const [totalAssets, setTotalAssets] = useState(0);
+  // 1日の目標額
+  const [dailyGoal, setDailyGoal] = useState<number>(() => {
+    const saved = localStorage.getItem('budget-daily-goal');
+    return saved ? JSON.parse(saved) : 3000;
+  });
 
-  // 支出を追加（Enterキー対応も考慮）
+  const [todaySpent, setTodaySpent] = useState<number>(0);
+  const [expenseInput, setExpenseInput] = useState<string>('');
+
+  // 予算設定の保存
+  useEffect(() => {
+    localStorage.setItem('budget-daily-goal', JSON.stringify(dailyGoal));
+  }, [dailyGoal]);
+
+  // 支出記録
   const handleAddExpense = () => {
     const amount = Number(expenseInput);
     if (isNaN(amount) || amount <= 0) return;
-    
-    setTodaySpent(prev => prev + amount);
+    setTodaySpent((prev) => prev + amount);
     setExpenseInput('');
   };
 
-  // 1日を確定させて積み上げる
-  const handleStack = () => {
-    const remaining = Math.max(0, DAILY_BUDGET - todaySpent);
-    setTotalAssets(prev => prev + remaining);
-    setTodaySpent(0);
+  // 1日の締めくくり（リセット）
+  const handleResetDay = () => {
+    if (confirm('今日の結果を確定してリセットしますか？')) {
+      setTodaySpent(0);
+    }
   };
 
-  const remaining = Math.max(0, DAILY_BUDGET - todaySpent);
+  const todayMargin = Math.max(0, dailyGoal - todaySpent);
 
   return (
     <div className="container">
-      <div className="header">
+      <header>
         <h1>Budget Stack</h1>
-        <p className="total-label">Total Assets</p>
-        <h2 className="total-value">¥{totalAssets.toLocaleString()}</h2>
-      </div>
+      </header>
 
-      <div className="card">
-        <p>Today's Remaining</p>
-        <h1 className="remaining-value">¥{remaining.toLocaleString()}</h1>
-      </div>
+      <main>
+        {/* 今日の主人公：Margin */}
+        <section className="hero">
+          <p>Today's Margin</p>
+          <h1 className="margin-value">¥{todayMargin.toLocaleString()}</h1>
+        </section>
 
-      <div className="input-group">
-        <input 
-          type="number" 
-          placeholder="Amount (¥)" 
-          value={expenseInput}
-          onChange={(e) => setExpenseInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleAddExpense()}
-        />
-        <button onClick={handleAddExpense} className="add-btn">Add</button>
-      </div>
+        {/* 支出入力 */}
+        <div className="input-group">
+          <input 
+            type="number" 
+            placeholder="Spend (¥)" 
+            value={expenseInput}
+            onChange={(e) => setExpenseInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddExpense()}
+          />
+          <button onClick={handleAddExpense}>Add</button>
+        </div>
 
-      <button onClick={handleStack} className="stack-btn">
-        End of Day: Stack Savings
-      </button>
+        {/* リセットボタン */}
+        <button className="reset-btn" onClick={handleResetDay}>
+          End of Day
+        </button>
+
+        {/* 設定エリア */}
+        <section className="settings">
+          <label>Daily Goal: </label>
+          <input 
+            type="number" 
+            value={dailyGoal}
+            onChange={(e) => setDailyGoal(Number(e.target.value))}
+          />
+        </section>
+      </main>
     </div>
   );
 }
