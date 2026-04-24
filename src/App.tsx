@@ -49,9 +49,9 @@ export default function App() {
         {/* 支出入力 */}
         <div className="input-group">
           <input 
-            type="number" 
-            inputMode="decimal"
-            pattern="0-9"
+            type="text" 
+            inputMode="numeric"
+            pattern="[0-9]"
             placeholder="Spend (¥)" 
             value={expenseInput}
             onChange={(e) => setExpenseInput(e.target.value)}
