@@ -13,6 +13,22 @@ body {
   padding: 0 20px;
 }
 
+.progress-container {
+  margin: 20px 0 10px 0;
+}
+
+.progress-bar{
+  height: 6px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #007AFF;
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 /* ガラスのような質感の共通設定 */
 .hero, .input-group, .settings, .reset-btn {
   background: rgba(255, 255, 255, 0.7);

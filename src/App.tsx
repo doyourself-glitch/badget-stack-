@@ -32,6 +32,7 @@ export default function App() {
   };
 
   const todayMargin = Math.max(0, dailyGoal - todaySpent);
+  const progress = Math.min((todaySpent / dailyGoal) * 100, 100);
 
   return (
     <div className="container">
@@ -44,6 +45,11 @@ export default function App() {
         <section className="hero">
           <p>Today's Margin</p>
           <h1 className="margin-value">¥{todayMargin.toLocaleString()}</h1>
+          <div className="progress-container">
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: '${progress}%'}} />
+            </div>
+          </div>
         </section>
 
         {/* 支出入力 */}
