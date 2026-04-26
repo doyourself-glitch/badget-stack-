@@ -47,7 +47,7 @@ export default function App() {
           <h1 className="margin-value">¥{todayMargin.toLocaleString()}</h1>
           <div className="progress-container">
             <div className="progress-bar">
-              <div className="progress-fill" style={{ width: '${progress}%'}} />
+              <div className="progress-fill" style={{ width: `${progress}%`}} />
             </div>
           </div>
         </section>
