@@ -81,6 +81,11 @@ export default function App() {
       setExpenseLogs([]);
     }
   };
+  
+  const handleDeleteLog = (idToDelete: number, amountToSubtract: number) => {
+      setExpenseLogs((prev: ExpenseLog[]) => prev.filter(log => log.id !==idToDelete));
+      setTodaySpent((prev: number) => Math.max(0, prev - amountToSubtract));
+  };
 
   // 残り予算とプログレスバーの計算
   const todayMargin = Math.max(0, dailyGoal - todaySpent);
@@ -150,11 +155,33 @@ export default function App() {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
               {expenseLogs.map((log) => (
                 <li key={log.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                  
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>¥{log.amount.toLocaleString()}</span>
                     <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.category}</span>
                   </div>
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.time}</span>
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.time}</span>
+                    <button 
+                      onClick={() => handleDeleteLog(log.id, log.amount)}
+                      style={{ 
+                        background: 'transparent', 
+                        border: 'none', 
+                        color: '#ff3b30', 
+                        fontSize: '14px', 
+                        cursor: 'pointer', 
+                        padding: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      title="この記録を削除"
+                    >
+                      ✖
+                    </button>
+                  </div>
+
                 </li>
               ))}
             </ul>
