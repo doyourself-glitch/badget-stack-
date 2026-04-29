@@ -5,17 +5,18 @@ import './App.css';
  * Budget Stack - 予算管理アプリ
  */
 export default function App() {
-  // ログ追加
+  // ログの型定義（カテゴリーを追加）
   type ExpenseLog = {
     id: number;
     amount: number;
     time: string;
+    category: string;
   };
 
   const [expenseLogs, setExpenseLogs] = useState<ExpenseLog[]>(() => {
-    const saved = localStorage.getItem('budget-expense-Logs');
-    return saved? JSON.parse(saved) : [];
-  })
+    const saved = localStorage.getItem('budget-expense-logs');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   // 1日の目標額の状態管理
   const [dailyGoal, setDailyGoal] = useState<number>(() => {
@@ -31,6 +32,10 @@ export default function App() {
 
   const [expenseInput, setExpenseInput] = useState<string>('');
 
+  // カテゴリーの定義と選択状態（タイポ修正済み）
+  const CATEGORIES = ['食費', '外食費', 'デート', '生活費', '固定費'];
+  const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORIES[0]);
+
   // 予算設定の自動保存
   useEffect(() => {
     localStorage.setItem('budget-daily-goal', JSON.stringify(dailyGoal));
@@ -41,9 +46,9 @@ export default function App() {
     localStorage.setItem('budget-today-spent', JSON.stringify(todaySpent));
   }, [todaySpent]);
 
-  // ローカルストレージに
+  // ログの自動保存
   useEffect(() => {
-    localStorage.setItem('budget-expense-logs' , JSON.stringify(expenseLogs));
+    localStorage.setItem('budget-expense-logs', JSON.stringify(expenseLogs));
   }, [expenseLogs]);
 
   // 支出の追加処理
@@ -51,14 +56,15 @@ export default function App() {
     const amount = Number(expenseInput);
     if (isNaN(amount) || amount <= 0) return;
 
+    // 新しいログの作成（カンマの抜け落ちとカテゴリーを追加）
     const newLog: ExpenseLog = {
       id: Date.now(),
       amount: amount,
-      time: new Date().toLocaleTimeString('ja-JP' , { hour: '2-digit', minute: '2-digit'})
+      time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }),
+      category: selectedCategory
     };
 
     setExpenseLogs((prev: ExpenseLog[]) => [newLog, ...prev]);
-
     setTodaySpent((prev: number) => prev + amount);
     setExpenseInput('');
 
@@ -97,28 +103,57 @@ export default function App() {
           </div>
         </section>
 
-        <div className="input-group">
-          <input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            placeholder="Spend (¥)"
-            value={expenseInput}
-            onChange={(e) => setExpenseInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddExpense()}
-          />
-          <button onClick={handleAddExpense}>Add</button>
+        {/* ▼▼▼ ここからが修正ポイント3の画面UIです ▼▼▼ */}
+        <div className="input-group" style={{ flexDirection: 'column' }}>
+          {/* カテゴリー選択ボタンの横並び */}
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                style={{
+                  background: selectedCategory === cat ? '#000' : 'rgba(0,0,0,0.05)',
+                  color: selectedCategory === cat ? '#fff' : '#86868b',
+                  padding: '8px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* 今までの金額入力とAddボタン */}
+          <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="Spend (¥)"
+              value={expenseInput}
+              onChange={(e) => setExpenseInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddExpense()}
+            />
+            <button onClick={handleAddExpense}>Add</button>
+          </div>
         </div>
 
         {expenseLogs.length > 0 && (
           <section className="glass" style={{ borderRadius: '24px', padding: '16px', marginBottom: '20px' }}>
-            <p style ={{ fontSize:'10px' , fontWeight: 'bold' , color: '#86868b' , textTransform: 'uppercase' , letterSpacing: '0.1em' , textAlign: 'center' , margin: '0 0 12px 0' }}>
+            <p style={{ fontSize: '10px', fontWeight: 'bold', color: '#86868b', textTransform: 'uppercase', letterSpacing: '0.1em', textAlign: 'center', margin: '0 0 12px 0' }}>
               Today's Logs
             </p>
-            <ul style={{ listStyle: 'none' , padding: 0, margin: 0, maxHeight: '160px', overflowY: 'auto'}}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
               {expenseLogs.map((log) => (
-                <li key={log.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 8px', borderBottom: '1px solid rgba(0,0,0,0.05' }}>
-                  <span style={{ fontWeight: 'bold' , fontSize: '1rem' }}>¥{log.amount.toLocaleString()}</span>
+                <li key={log.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>¥{log.amount.toLocaleString()}</span>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.category}</span>
+                  </div>
                   <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.time}</span>
                 </li>
               ))}
