@@ -97,7 +97,6 @@ export default function App() {
           </div>
         </section>
 
-        // 支出入力
         <div className="input-group">
           <input
             type="text"
@@ -127,7 +126,6 @@ export default function App() {
           </section>
         )}
         
-        // １日終了
         <button className="reset-btn" onClick={handleResetDay}>
           End of Day
         </button>
