@@ -4,7 +4,7 @@
 
 `Budget Stack` は、家計簿のような「記録の負担」を最小限に抑え、現在の残余予算（Margin）を把握することに特化したパーソナルファイナンスツールです。
 
-[]([GitHubリポジトリURL])
+[https://vercel.com/doyourself-glitchs-projects/badget-stack-jzpe/9Mzh6matRo1UzKWEd64c7MxkZ6uB]([GitHubリポジトリURL])
 
 ---
 
