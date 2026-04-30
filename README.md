@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# Budget Stack
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **「あといくら使えるか」を直感的に。Apple Aestheticを追求したミニマルな予算管理アプリ。**
 
-Currently, two official plugins are available:
+`Budget Stack` は、家計簿のような「記録の負担」を最小限に抑え、現在の残余予算（Margin）を把握することに特化したパーソナルファイナンスツールです。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[]([GitHubリポジトリURL])
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ UI/UX Philosophy
 
-## Expanding the ESLint configuration
+Appleのプロダクトデザインにインスパイアされた、シンプルかつ重厚感のある体験を設計しました。
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+-   **Glassmorphism & Elevation:** `backdrop-filter` を活用したグラスモフィズムを採用。物理的な奥行き（Elevation）を演出することで、情報の優先度を視覚的に整理しています。
+-   **Micro-interactions:** Vibration API を用いた触覚フィードバックを実装。ボタン押下時の物理的な手応えが、デジタルな操作に心地よさを加えます。
+-   **Clarity & Margin:** 「Margin（残余）」を最も大きく配置。タイポグラフィと十分な余白により、アプリを開いた瞬間に最も重要な情報を認識できるよう調整しました。
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠 Technical Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+-   **Frontend:** React / TypeScript
+-   **Styling:** CSS3 (Custom Properties / Flexbox / Glassmorphism)
+-   **Data Persistence:** LocalStorage API
+-   **Feedback:** Vibration API
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Key Features
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+-   **Real-time Margin Calculation:** 目標予算と支出の差分をリアルタイムに計算し、プログレスバーで視覚化。
+-   **Smart Categorization:** 頻出するカテゴリーを選択式にし、入力の手間を削減。
+-   **Safe Logging:** 記録ミスを即座に修正できる削除機能と、1日の終わりにデータをリセットする確定機能を搭載。
+-   **Responsive Design:** モバイルデバイスでの片手操作に最適化されたレイアウト。
