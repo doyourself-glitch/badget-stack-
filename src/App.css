@@ -1,151 +1,305 @@
-/* ===== Global ===== */
+/* ===== Global Variables (Design System) ===== */
+:root {
+  --color-bg: #f5f5f7;
+  --color-text-main: #1d1d1f;
+  --color-text-sub: #86868b;
+  --color-accent: #007aff;
+  --color-danger: #ff3b30;
+  
+  --color-card-bg: rgba(255, 255, 255, 0.75);
+  --color-card-border: rgba(255, 255, 255, 0.4);
+  --color-input-bg: rgba(255, 255, 255, 0.6);
+  
+  --shadow-elevation: 0 10px 40px rgba(0, 0, 0, 0.04);
+  
+  --radius-card: 24px;
+  --radius-pill: 100px;
+  --radius-sm: 14px;
+}
+
 body {
-  background-color: #f5f5f7;
-  color: #1d1d1f;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ===== Layout ===== */
 .container {
-  max-width: 400px;
+  max-width: 440px; 
   margin: 40px auto;
   padding: 0 20px;
   box-sizing: border-box;
 }
 
 header h1 {
-  font-weight: 600;
-  letter-spacing: -0.5px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
   text-align: center;
   margin-bottom: 24px;
 }
 
-/* ===== Card base ===== */
-.hero,
-.input-group,
-.settings,
-.reset-btn {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
-  box-sizing: border-box;
+/* ===== Typography ===== */
+.section-label {
+  margin: 0 0 12px 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-/* ===== Hero section ===== */
-.hero {
+.text-center {
   text-align: center;
 }
 
-.hero p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #86868b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* ===== Card Base (Glassmorphism) ===== */
+.card {
+  background: var(--color-card-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-elevation);
+  margin-bottom: 16px; 
+  box-sizing: border-box;
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  text-align: center;
+  padding: 32px 24px;
 }
 
 .margin-value {
   font-size: 3.5rem;
-  margin: 10px 0 0 0;
+  margin: 8px 0 16px 0;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
-/* ===== Progress bar ===== */
+/* ===== Progress Bar ===== */
 .progress-container {
-  margin: 20px 0 10px 0;
+  margin: 16px 0 0 0;
 }
 
 .progress-bar {
-  height: 8px;
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
+  height: 6px; /* より繊細に細く */
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: #007aff;
-  transition: width 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ===== Input group ===== */
-.input-group {
+/* ===== Input Section ===== */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.category-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+.category-scroll::-webkit-scrollbar {
+  display: none; 
+}
+
+.category-chip {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-sub);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-chip.active {
+  background: var(--color-text-main);
+  color: #fff;
+}
+
+.input-row {
   display: flex;
   gap: 12px;
 }
 
-input {
+.input-row input {
   flex: 1;
-  background: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 14px 16px;
-  border-radius: 14px;
-  font-size: 1rem;
+  background: var(--color-input-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  font-size: 1.125rem;
+  font-weight: 500;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-input:focus {
-  border-color: #007aff;
+.input-row input:focus {
+  border-color: var(--color-accent);
+  background: #fff;
 }
 
-/* ===== Buttons ===== */
-button {
-  background: #000;
+.btn-primary {
+  background: var(--color-text-main);
   color: #fff;
   border: none;
-  padding: 12px 24px;
-  border-radius: 14px;
+  padding: 0 24px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: transform 0.2s, opacity 0.2s;
 }
 
-button:active {
+.btn-primary:active {
   transform: scale(0.96);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-.reset-btn {
-  width: 100%;
-  background: rgba(255, 59, 48, 0.1);
-  color: #ff3b30;
-  text-align: center;
+/* ===== Logs Section ===== */
+.log-section {
+  padding: 20px 24px;
+}
+
+.log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.log-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+.log-item:last-child {
+  border-bottom: none;
+}
+
+.log-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-amount {
   font-weight: 600;
-  padding: 18px;
-  cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.125rem;
 }
 
-/* ===== Settings ===== */
+.log-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-sub);
+}
+
+.log-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.log-time {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-sub);
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  color: var(--color-text-sub);
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.btn-delete:hover {
+  color: var(--color-danger);
+  background-color: rgba(255, 59, 48, 0.1);
+}
+
+/* ===== Settings & Reset ===== */
+.btn-reset {
+  width: 100%;
+  background: transparent;
+  color: var(--color-danger);
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.btn-reset:active {
+  background: rgba(255, 59, 48, 0.05);
+}
+
 .settings {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 20px 24px;
 }
 
-.settings label {
-  font-size: 0.9rem;
+.settings-label {
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #86868b;
+  color: var(--color-text-sub);
+}
+
+.settings-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.currency-symbol {
+  font-weight: 600;
+  color: var(--color-text-main);
 }
 
 .settings input {
-  max-width: 100px;
+  max-width: 80px;
   background: transparent;
   border: none;
-  border-bottom: 1px solid #ddd;
   text-align: right;
-  font-weight: bold;
-  border-radius: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text-main);
+  outline: none;
   padding: 4px;
-  flex: unset;
 }

@@ -4,10 +4,6 @@
 
 `Budget Stack` は、家計簿のような「記録の負担」を最小限に抑え、現在の残余予算（Margin）を把握することに特化したパーソナルファイナンスツールです。
 
-[https://badget-stack-jzpe.vercel.app/]([GitHubリポジトリURL])
-
----
-
 ## ✨ UI/UX Philosophy
 
 Appleのプロダクトデザインにインスパイアされた、シンプルかつ重厚感のある体験を設計しました。

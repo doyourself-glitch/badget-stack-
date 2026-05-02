@@ -98,8 +98,8 @@ export default function App() {
       </header>
 
       <main>
-        <section className="hero">
-          <p>Today's Margin</p>
+        <section className="card hero">
+          <p className="section-label">Today's Margin</p>
           <h2 className="margin-value">¥{todayMargin.toLocaleString()}</h2>
           <div className="progress-container">
             <div className="progress-bar">
@@ -108,32 +108,20 @@ export default function App() {
           </div>
         </section>
 
-        {/* ▼▼▼ ここからが修正ポイント3の画面UIです ▼▼▼ */}
-        <div className="input-group" style={{ flexDirection: 'column' }}>
-          {/* カテゴリー選択ボタンの横並び */}
-          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+       <section className="card input-section">
+          <div className="category-scroll">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                style={{
-                  background: selectedCategory === cat ? '#000' : 'rgba(0,0,0,0.05)',
-                  color: selectedCategory === cat ? '#fff' : '#86868b',
-                  padding: '8px 12px',
-                  borderRadius: '20px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0
-                }}
+                className={`category-chip ${selectedCategory === cat ? 'active' : ''}`}
               >
                 {cat}
               </button>
             ))}
           </div>
 
-          {/* 今までの金額入力とAddボタン */}
-          <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+          <div className="input-row">
             <input
               type="text"
               inputMode="numeric"
@@ -143,62 +131,55 @@ export default function App() {
               onChange={(e) => setExpenseInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddExpense()}
             />
-            <button onClick={handleAddExpense}>Add</button>
+            <button className="btn-primary" onClick={handleAddExpense}>Add</button>
           </div>
-        </div>
+        </section>
 
+        {/* Logs Section */}
         {expenseLogs.length > 0 && (
-          <section className="glass" style={{ borderRadius: '24px', padding: '16px', marginBottom: '20px' }}>
-            <p style={{ fontSize: '10px', fontWeight: 'bold', color: '#86868b', textTransform: 'uppercase', letterSpacing: '0.1em', textAlign: 'center', margin: '0 0 12px 0' }}>
-              Today's Logs
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, maxHeight: '160px', overflowY: 'auto' }}>
+          <section className="card log-section">
+            <p className="section-label text-center">Today's Logs</p>
+            <ul className="log-list">
               {expenseLogs.map((log) => (
-                <li key={log.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 8px', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                  
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>¥{log.amount.toLocaleString()}</span>
-                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.category}</span>
+                <li key={log.id} className="log-item">
+                  <div className="log-info">
+                    <span className="log-amount">¥{log.amount.toLocaleString()}</span>
+                    <span className="log-category">{log.category}</span>
                   </div>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#86868b' }}>{log.time}</span>
+                  <div className="log-meta">
+                    <span className="log-time">{log.time}</span>
                     <button 
+                      className="btn-delete"
                       onClick={() => handleDeleteLog(log.id, log.amount)}
-                      style={{ 
-                        background: 'transparent', 
-                        border: 'none', 
-                        color: '#ff3b30', 
-                        fontSize: '14px', 
-                        cursor: 'pointer', 
-                        padding: '4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                      title="この記録を削除"
+                      title="Delete log"
                     >
-                      ✖
+                      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
                     </button>
                   </div>
-
                 </li>
               ))}
             </ul>
           </section>
         )}
         
-        <button className="reset-btn" onClick={handleResetDay}>
+        <button className="card btn-reset" onClick={handleResetDay}>
           End of Day
         </button>
 
-        <section className="settings">
-          <label>Daily Goal: </label>
-          <input
-            type="number"
-            value={dailyGoal}
-            onChange={(e) => setDailyGoal(Number(e.target.value))}
-          />
+        {/* Settings Section */}
+        <section className="card settings">
+          <label className="settings-label">Daily Goal:</label>
+          <div className="settings-input-wrapper">
+            <span className="currency-symbol">¥</span>
+            <input
+              type="number"
+              value={dailyGoal}
+              onChange={(e) => setDailyGoal(Number(e.target.value))}
+            />
+          </div>
         </section>
       </main>
     </div>
