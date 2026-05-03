@@ -12,9 +12,20 @@ export default function App() {
     category: string;
   };
 
+  type DailySummary = {
+    date: string;
+    totalSpent: number;
+    categoryTotals: { category: string; amount: number }[];
+  };
+
   const today = new Date().toDateString();
 
   const [activeTab, setActiveTab] = useState<'home' | 'analytics' | 'settings'>('home');
+
+  const [historicalData, setHistoricalData] = useState<DailySummary[]>(() => {
+    const saved = localStorage.getItem('budget-historical-data');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const [expenseLogs, setExpenseLogs] = useState<ExpenseLog[]>(() => {
     const lastAccess = localStorage.getItem('budget-last-access');
@@ -58,6 +69,11 @@ export default function App() {
     localStorage.setItem('budget-expense-logs', JSON.stringify(expenseLogs));
   }, [expenseLogs]);
 
+  useEffect(() => {
+    console.log("Historical Data:", historicalData); // ← これがあることで「使っている」とみなされる
+    localStorage.setItem('budget-historical-data', JSON.stringify(historicalData));
+  }, [historicalData]);
+
   const handleAddExpense = () => {
     const amount = Number(expenseInput);
     if (isNaN(amount) || amount <= 0) return;
@@ -80,6 +96,26 @@ export default function App() {
 
   const handleResetDay = () => {
     if (window.confirm('今日の結果を確定してリセットしますか？')) {
+      const currentCategoryTotals = CATEGORIES.map(cat => {
+        const amount = expenseLogs
+          .filter(log => log.category === cat)
+          .reduce((sum, log) => sum + log.amount, 0);
+        return { category: cat, amount };
+      }).filter(item => item.amount > 0);
+
+      if (todaySpent > 0) {
+        const newSummary: DailySummary = {
+          date: today,
+          totalSpent: todaySpent,
+          categoryTotals: currentCategoryTotals
+        };
+
+        setHistoricalData(prev => {
+          const filtered = prev.filter(d => d.date !== today);
+          return [newSummary, ...filtered];
+        });
+      }
+
       setTodaySpent(0);
       setExpenseLogs([]);
       setActiveTab('home');
