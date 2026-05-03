@@ -18,7 +18,7 @@ export default function App() {
 
   const [expenseLogs, setExpenseLogs] = useState<ExpenseLog[]>(() => {
     const lastAccess = localStorage.getItem('budget-last-access');
-    if (lastAccess && lastAccess !== today) return []; // 日付が変わっていれば最初から空っぽにする
+    if (lastAccess && lastAccess !== today) return [];
     
     const saved = localStorage.getItem('budget-expense-logs');
     return saved ? JSON.parse(saved) : [];
@@ -31,7 +31,7 @@ export default function App() {
 
   const [todaySpent, setTodaySpent] = useState<number>(() => {
     const lastAccess = localStorage.getItem('budget-last-access');
-    if (lastAccess && lastAccess !== today) return 0; // 日付が変わっていれば最初から0にする
+    if (lastAccess && lastAccess !== today) return 0;
     
     const saved = localStorage.getItem('budget-today-spent');
     return saved ? JSON.parse(saved) : 0;
@@ -110,7 +110,7 @@ export default function App() {
 
       <main className="view-area">
         {/* ==============================
-            1. HOME VIEW
+            1. HOME VIEW (入力と今日のログ)
         ============================== */}
         {activeTab === 'home' && (
           <div className="fade-in">
@@ -150,6 +150,35 @@ export default function App() {
                 <button className="btn-primary" onClick={handleAddExpense}>Add</button>
               </div>
             </section>
+
+            {expenseLogs.length > 0 && (
+              <section className="card log-section">
+                <p className="section-label text-center">Today's Logs</p>
+                <ul className="log-list">
+                  {expenseLogs.map((log) => (
+                    <li key={log.id} className="log-item">
+                      <div className="log-info">
+                        <span className="log-amount">¥{log.amount.toLocaleString()}</span>
+                        <span className="log-category">{log.category}</span>
+                      </div>
+                      <div className="log-meta">
+                        <span className="log-time">{log.time}</span>
+                        <button 
+                          className="btn-delete"
+                          onClick={() => handleDeleteLog(log.id, log.amount)}
+                          title="Delete log"
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         )}
         
@@ -159,64 +188,33 @@ export default function App() {
         {activeTab === 'analytics' && (
           <div className="fade-in">
             {expenseLogs.length > 0 ? (
-              <>
-                {/* 追加済みのスタックバーグラフ */}
-                <section className="card chart-section">
-                  <p className="section-label text-center">Today's Breakdown</p>
-                  <div className="progress-container">
-                    <div className="progress-bar stacked-bar">
-                      {categoryTotals.map((item) => (
-                        <div
-                          key={item.category}
-                          className="progress-fill"
-                          style={{
-                            width: `${item.percent}%`,
-                            backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="chart-legend">
+              <section className="card chart-section">
+                <p className="section-label text-center">Today's Breakdown</p>
+                <div className="progress-container">
+                  <div className="progress-bar stacked-bar">
                     {categoryTotals.map((item) => (
-                      <div key={item.category} className="legend-item">
-                        <span className="legend-dot" style={{ backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`}}></span>
-                        <span className="legend-label">{item.category}</span>
-                        <span className="legend-amount">¥{item.amount.toLocaleString()}</span>
-                      </div>
+                      <div
+                        key={item.category}
+                        className="progress-fill"
+                        style={{
+                          width: `${item.percent}%`,
+                          backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`
+                        }}
+                      />
                     ))}
                   </div>
-                </section>
-
-                {/* ログ一覧 */}
-                <section className="card log-section">
-                  <p className="section-label text-center">Logs</p>
-                  <ul className="log-list">
-                  {expenseLogs.map((log) => (
-                      <li key={log.id} className="log-item">
-                      <div className="log-info">
-                        <span className="log-amount">¥{log.amount.toLocaleString()}</span>
-                        <span className="log-category">{log.category}</span>
-                      </div>
-                        <div className="log-meta">
-                          <span className="log-time">{log.time}</span>
-                          <button 
-                          className="btn-delete"
-                            onClick={() => handleDeleteLog(log.id, log.amount)}
-                            title="Delete log"
-                        >
-                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                          </svg>
-                          </button>
-                        </div>
-                    </li>
-                    ))}
-                  </ul>
-                </section>
-              </>
+                </div>
+                
+                <div className="chart-legend">
+                  {categoryTotals.map((item) => (
+                    <div key={item.category} className="legend-item">
+                      <span className="legend-dot" style={{ backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`}}></span>
+                      <span className="legend-label">{item.category}</span>
+                      <span className="legend-amount">¥{item.amount.toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
             ) : (
               <p className="empty-state">No records yet.</p>
             )}
@@ -224,7 +222,7 @@ export default function App() {
         )}
 
         {/* ==============================
-            3. SETTINGS VIEW
+            3. SETTINGS VIEW 
         ============================== */}
         {activeTab === 'settings' && (
           <div className="fade-in">
