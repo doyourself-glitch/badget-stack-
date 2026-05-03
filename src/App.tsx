@@ -223,7 +223,7 @@ export default function App() {
         ============================== */}
         {activeTab === 'analytics' && (
           <div className="fade-in">
-            {expenseLogs.length > 0 ? (
+            {expenseLogs.length > 0 && (
               <section className="card chart-section">
                 <p className="section-label text-center">Today's Breakdown</p>
                 <div className="progress-container">
@@ -251,9 +251,40 @@ export default function App() {
                   ))}
                 </div>
               </section>
-            ) : (
-              <p className="empty-state">No records yet.</p>
             )}
+
+            <section className="card log-section">
+              <p className="section-label text-center">History</p>
+              {historicalData.length > 0 ? (
+                <ul className="log-list">
+                  {historicalData.map((day) => {
+                    const d = new Date(day.date);
+                    const shortDate = `${d.getMonth() + 1}/${d.getDate()}`;
+                    return (
+                      <li key={day.date} className="log-item">
+                        <div className="log-info">
+                          <span className="log-category" style={{ fontSize: '0.85rem' }}>{shortDate}</span>
+                          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '4px' }}>
+                            {day.categoryTotals.map(cat => (
+                              <span key={cat.category} style={{ fontSize: '0.65rem', color: 'var(--color-text-sub)', background: 'rgba(0,0,0,0.04)', padding: '2px 6px', borderRadius: '4px' }}>
+                                {cat.category}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="log-meta">
+                          <span className="log-amount" style={{ color: 'var(--color-text-main)'}}>
+                              ¥{day.totalSpent.toLocaleString()}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="empty-state">No records yet.</p>
+              )}
+            </section>
           </div>
         )}
 
