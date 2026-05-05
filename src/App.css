@@ -152,10 +152,10 @@ header h1 {
   flex: 1;
   min-width: 0;
   background: var(--color-input-bg);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 16px;
+  height: 54px;
+  padding: 0 16px;
   border-radius: var(--radius-sm);
-  font-size: 1.125rem;
+  font-size: 1.1rem;
   font-weight: 500;
   outline: none;
   transition: border-color 0.2s, background 0.2s;
@@ -171,7 +171,11 @@ header h1 {
 
 .btn-primary {
   background: var(--color-text-main);
+  height: 54px;
   color: #fff;
+  display: flex;
+  align-items:center;
+  justify-content: center;
   border: none;
   padding: 0 24px;
   border-radius: var(--radius-sm);
