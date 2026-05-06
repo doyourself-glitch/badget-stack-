@@ -5,6 +5,7 @@
   --color-text-sub: #86868b;
   --color-accent: #007aff;
   --color-danger: #ff3b30;
+  --color-success: #34c759; /* ▼追加: 鮮やかなiOSグリーン */
   
   --color-card-bg: rgba(255, 255, 255, 0.75);
   --color-card-border: rgba(255, 255, 255, 0.4);
@@ -23,20 +24,35 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* スクロール時のバウンス効果を美しく見せるための背景色固定 */
+  overscroll-behavior-y: none;
+}
+
+/* ===== Animations ===== */
+/* ▼追加: タブ切り替え時の有機的なフワッとした動き */
+.fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== Layout ===== */
 .container {
   max-width: 440px; 
-  margin: 40px auto;
-  padding: 0 20px 80px;
+  margin: 0 auto; /* ヘッダーを上に詰めるため調整 */
+  padding: 40px 20px 100px; /* ▼修正: ボトムナビゲーションに被らないよう下部余白を100pxに拡大 */
   box-sizing: border-box;
+  min-height: 100vh;
+  position: relative;
 }
 
 header h1 {
   font-weight: 700;
   font-size: 1.5rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em; /* ▼修正: よりAppleらしく文字間を詰める */
   text-align: center;
   margin-bottom: 24px;
 }
@@ -53,6 +69,10 @@ header h1 {
 
 .text-center {
   text-align: center;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
 }
 
 /* ===== Card Base (Glassmorphism) ===== */
@@ -89,7 +109,7 @@ header h1 {
   font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 10px;
-  border-radius: var(--color-pill);
+  border-radius: var(--radius-pill); /* ▼修正: --color-pill から --radius-pill へ */
 }
 
 .stacked-badge.positive {
@@ -116,7 +136,7 @@ header h1 {
 }
 
 .progress-bar {
-  height: 6px; /* より繊細に細く */
+  height: 6px; 
   background: rgba(0, 0, 0, 0.06);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -126,7 +146,12 @@ header h1 {
   height: 100%;
   background: var(--color-accent);
   border-radius: var(--radius-pill);
-  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+}
+
+/* ▼追加: 予算オーバー時にバーを赤くする */
+.progress-fill.over-budget {
+  background: var(--color-danger);
 }
 
 /* ===== Input Section ===== */
@@ -228,7 +253,7 @@ header h1 {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 220px;
+  max-height: 250px;
   overflow-y: auto;
 }
 
@@ -294,7 +319,7 @@ header h1 {
 .btn-reset {
   width: 100%;
   background: transparent;
-  color: var(--color-danger);
+  color: var(--color-text-main);
   border: none;
   font-weight: 600;
   font-size: 1rem;
@@ -305,7 +330,7 @@ header h1 {
 }
 
 .btn-reset:active {
-  background: rgba(255, 59, 48, 0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .settings {
@@ -342,4 +367,52 @@ header h1 {
   color: var(--color-text-main);
   outline: none;
   padding: 4px;
+}
+
+/* ==========================================================================
+   ▼追加: Bottom Navigation (Tab Bar) の完全なスタイリング
+   ========================================================================== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px; /* コンテナの幅に合わせる */
+  background: rgba(245, 245, 247, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-around;
+  /* env(safe-area-inset-bottom) は最近のiPhoneのホームバー領域を避ける魔法のコードです */
+  padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); 
+  z-index: 1000; /* コンテンツの上に常に表示 */
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.nav-item:active {
+  transform: scale(0.92);
+}
+
+.nav-item.active {
+  color: var(--color-accent); /* 選択されたタブは青く光る */
+}
+
+.nav-icon {
+  width: 24px;
+  height: 24px;
 }
