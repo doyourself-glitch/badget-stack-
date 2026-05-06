@@ -22,6 +22,11 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState<'home' | 'analytics' | 'settings'>('home');
 
+  const [stackedMargin, setStackedMargin] = useState<number>(() => {
+    const saved = localStorage.getItem('budget-stacked-margin');
+    return saved ? JSON.parse(saved) : 0;
+  })
+
   const [historicalData, setHistoricalData] = useState<DailySummary[]>(() => {
     const saved = localStorage.getItem('budget-historical-data');
     return saved ? JSON.parse(saved) : [];
@@ -74,6 +79,10 @@ export default function App() {
     localStorage.setItem('budget-historical-data', JSON.stringify(historicalData));
   }, [historicalData]);
 
+  useEffect(() => {
+    localStorage.setItem('budget-stacked-margin', JSON.stringify(stackedMargin));
+  }, [stackedMargin]);
+
   const handleAddExpense = () => {
     const amount = Number(expenseInput);
     if (isNaN(amount) || amount <= 0) return;
@@ -116,6 +125,8 @@ export default function App() {
         });
       }
 
+      setStackedMargin(prev => prev + (dailyGoal - todaySpent));
+
       setTodaySpent(0);
       setExpenseLogs([]);
       setActiveTab('home');
@@ -127,16 +138,30 @@ export default function App() {
       setTodaySpent((prev: number) => Math.max(0, prev - amountToSubtract));
   };
 
-  const todayMargin = Math.max(0, dailyGoal - todaySpent);
-  const progress = Math.min((todaySpent / dailyGoal) * 100, 100);
+  const handleClearHistory = () => {
+    if (window.confirm('過去の履歴と繰り返し予算を全て消去しますか？この操作は取り消せません。')){
+      setHistoricalData([]);
+      setStackedMargin(0);
+    }
+  };
+
+  const availableToday = dailyGoal + stackedMargin;
+
+  const todayMargin = availableToday - todaySpent;
+
+  const progress = availableToday > 0 ? Math.min((todaySpent / availableToday) * 100, 100) : 100;
 
   const categoryTotals = CATEGORIES.map(cat => {
     const amount = expenseLogs
       .filter(log => log.category === cat)
       .reduce((sum, log) => sum + log.amount, 0);
-    const percent = (amount / dailyGoal) * 100;
+    const percent = availableToday > 0 ? (amount / availableToday) * 100 : 0;
     return { category: cat, amount, percent };
-  }).filter(item => item.amount > 0); 
+  }).filter(item => item.amount > 0);
+
+  const formattedMargin = todayMargin < 0
+    ? `-¥${Math.abs(todayMargin).toLocaleString()}`
+    : `¥${todayMargin.toLocaleString()}`
 
   return (
     <div className="container">
@@ -151,11 +176,25 @@ export default function App() {
         {activeTab === 'home' && (
           <div className="fade-in">
             <section className="card hero">
-              <p className="section-label">Today's Margin</p>
-              <h2 className="margin-value">¥{todayMargin.toLocaleString()}</h2>
+              <div className="hero-header">
+                <p className="section-label">Today's margin</p>
+                {stackedMargin !== 0 && (
+                  <span className={`stacked-badge ${stackedMargin > 0 ? 'positive' : 'negative'}`}>
+                    {stackedMargin > 0 ? '+' : ''}¥{stackedMargin.toLocaleString()} Stacked
+                  </span>
+                )}
+              </div>
+
+              <h2 className={`margin-value ${todayMargin < 0 ? 'text-danger' : ''}`}>
+                {formattedMargin}
+              </h2>
+              
               <div className="progress-container">
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${progress}%` }} />
+                  <div 
+                    className={`progress-fill ${todayMargin < 0 ? 'over-budget' : ''}`} 
+                    style={{ width: `${progress}%` }} 
+                  />
                 </div>
               </div>
             </section>
@@ -307,6 +346,14 @@ export default function App() {
 
             <button className="card btn-reset" onClick={handleResetDay}>
               End of Day (Reset)
+            </button>
+
+            <button
+              className="card btn-reset"
+              onClick={handleClearHistory}
+              style={{ marginTop: '16px', color: 'var(--color-danger)' }}
+            >
+              Clear History & Stack
             </button>
           </div>
         )}
