@@ -276,31 +276,30 @@ export default function App() {
           <div className="fade-in">
             {expenseLogs.length > 0 && (
               <section className="card chart-section">
-                <p className="section-label text-center">Today's Breakdown</p>
-                <div className="progress-container">
-                  <div className="progress-bar stacked-bar">
-                    {categoryTotals.map((item) => (
-                      <div
-                        key={item.category}
-                        className="progress-fill"
-                        style={{
-                          width: `${item.percent}%`,
-                          backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="chart-legend">
-                  {categoryTotals.map((item) => (
+                <p className="section-label">Today's Breakdown</p>
+                <div className="donut-chart"
+                style={{ background: donutGradient }}
+              />
+              <div className="donut-inner">
+                <span className="donut-inner-label">Total Spent</span>
+                <span className="donut-inner-value">¥{todaySpent.toLocaleString()}</span>
+              </div>
+
+              <div className="chart-ledend">
+                {categoryTotals.map((item) => {
+                  const index = CATEGORIES.indexOf(item.category);
+                  const dotColor = `var(--color-cat-${(index % 5) + 1})`;
+                  return (
                     <div key={item.category} className="legend-item">
-                      <span className="legend-dot" style={{ backgroundColor: `var(--color-cat-${CATEGORIES.indexOf(item.category) + 1})`}}></span>
-                      <span className="legend-label">{item.category}</span>
+                      <div className="legend-left">
+                        <span className="legend-dot" style={{ backgroundColor: dotColor }}></span>
+                        <span className="legend-label">{item.category}</span>
+                      </div>
                       <span className="legend-amount">¥{item.amount.toLocaleString()}</span>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
+              </div>
               </section>
             )}
 
