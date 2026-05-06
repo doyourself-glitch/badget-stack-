@@ -163,6 +163,18 @@ export default function App() {
     ? `-¥${Math.abs(todayMargin).toLocaleString()}`
     : `¥${todayMargin.toLocaleString()}`
 
+  let currentPercent = 0;
+  const conicStops = categoryTotals.map(item => {
+    const index = CATEGORIES.indexOf(item.category);
+    const color = `var(--color-cat-${(index % 5) + 1})`;
+    const chartPercent = todaySpent > 0 ? (item.amount / todaySpent) * 100 : 0;
+    const stop = `${color} ${currentPercent}% ${currentPercent + chartPercent}%`;
+    currentPercent += chartPercent;
+    return stop;
+  }).join(',');
+
+  const donutGradient = `conic-gradient(${conicStops})`
+
   return (
     <div className="container">
       <header>
